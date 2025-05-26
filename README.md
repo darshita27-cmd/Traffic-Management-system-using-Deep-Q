@@ -9,6 +9,36 @@ Our project demonstrates how AI can be used to optimize traffic conditions in th
 The dataset used here includes 11 types of vehicles majorly used in India spanning with over 15000 images after augmentation methods. The vehicles in the data set are Bicycle, Bike, Bus, Car, CNG, Easy-bike, Horse-Cart, Leguna, Rickshaw, Tractor and Truck.
 ![Vehicles in Dataset](assets/dataset.png)
 
+## Data Augmentation
+
+The dataset was increased to this size with the help of augmentation methods. It is the easiest and most common way to increase the size of the dataset. The following operations were applied to the dataset:
+The images below are in a format where the image on top is the actual image and the image(s) in bottom are the processed images.
+
+### Noise
+
+![Image After Noise](assets/augmentation_noise.png)
+
+### Flip
+
+![Image after Flip](assets/augmentation_flip.png)
+
+### Rotation
+
+![Image after Rotation](assets/augmentation_rotation.png)
+
+### Blur
+
+![Image after Blur](assets/augmentation_blur.png)
+
+## YOLOv8 Results
+
+Achieved a high precision of 92.5% indication that majority of the vehicles were classified correctly.
+
+![Yolov8 Confusion Matrix](assets/confusion_matrix.png)
+
+![Yolov8 F1-Confidence Curve](assets/f1-confidence_curvex.png)
+
+![Yolov8 Result](assets/result.png)
 
 ## ✨ Features
 

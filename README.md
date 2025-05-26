@@ -7,6 +7,7 @@ Our project demonstrates how AI can be used to optimize traffic conditions in th
 ## Dataset
 
 The dataset used here includes 11 types of vehicles majorly used in India spanning with over 15000 images after augmentation methods. The vehicles in the data set are Bicycle, Bike, Bus, Car, CNG, Easy-bike, Horse-Cart, Leguna, Rickshaw, Tractor and Truck.
+![Vehicles in Dataset](assets/dataset.png)
 
 
 ## ✨ Features

@@ -1,51 +1,153 @@
-# Traffic-Management-system-using-Deep-Q
+# 🚦 Autonomous Traffic Signal Control Using YOLOv8 & DQN with SUMO
 
-Nowadays traffic congestion in Urban areas is a major issue, leading to major delays, increased fuel consumption, and high pollution levels. Our project, Traffic Management System, aims to reduce congestion by optimizing traffic lights at major intersections of the city based on real time conditions. This project uses advanced trained YOLO-based vehicle detection to classify different vehicle types and simultaneously counting them by extracting frames from live video feeds from all sides of the crossing. These counts are then used to calculate the optimal time for traffic lights, reducing waiting time thus reducing congestion.
-Unlike current traffic control systems, which mostly depend on pre-set timers, our project uses AI-powered solutions to adapt to real-world conditions, making it highly efficient and scalable. The test for this project is done using pre-collected images to simulate real-life traffic conditions. While the current system focuses on traffic optimization, future iterations may include emergency vehicle prioritization, traffic rule violation detection and hardware integration for live deployment.
-Our project demonstrates how AI can be used to optimize traffic conditions in the country, offering a sustainable and smart solution.
+This project integrates **YOLOv8** for vehicle detection, a custom **Reinforcement Learning (RL)** environment using **OpenAI Gym** and **SUMO (Simulation of Urban MObility)**, and a **Deep Q-Network (DQN)** for learning optimal traffic signal strategies. The system is trained to dynamically manage traffic light timing based on live vehicle detection and traffic parameters.
 
-## Dataset
+## 🧠 Key Features
 
-The dataset used here includes 11 types of vehicles majorly used in India spanning with over 15000 images after augmentation methods. The vehicles in the data set are Bicycle, Bike, Bus, Car, CNG, Easy-bike, Horse-Cart, Leguna, Rickshaw, Tractor and Truck.
-![Vehicles in Dataset](assets/dataset.png)
+* **YOLOv8-based Vehicle Detection**
 
-## Data Augmentation
+  * Pretrained YOLOv8 model fine-tuned to detect **10 types of vehicles**:
+    `bicycle, bike, bus, car, cng, e_rickshaw, horse_cart, tractor, truck, wheelbarrow`
+  * Data Augmentation techniques used during training:
+    `noise`, `blur`, and `rotation`.
 
-The dataset was increased to this size with the help of augmentation methods. It is the easiest and most common way to increase the size of the dataset. The following operations were applied to the dataset:
-The images below are in a format where the image on top is the actual image and the image(s) in bottom are the processed images.
+* **Custom SUMO Environment**
 
-### Noise
+  * Simulates a 4x4 intersection using SUMO and `sumo_rl`.
+  * Integrates with a custom `gym.Env` to simulate traffic control decisions.
 
-![Image After Noise](assets/augmentation_noise.png)
+* **DQN (Deep Q-Network)**
 
-### Flip
+  * Learns optimal signal timing based on:
 
-![Image after Flip](assets/augmentation_flip.png)
+    * Traffic density
+    * Vehicle waiting time
+    * Emergency vehicle presence
+    * Vehicle type priorities and speeds
+  * Rewards smooth traffic flow and penalizes delays or emergency vehicle blockage.
 
-### Rotation
+---
 
-![Image after Rotation](assets/augmentation_rotation.png)
+## 🧰 Installation & Setup
 
-### Blur
+```bash
+# Install core dependencies
+!pip install tensorflow gym[all] sumo_rl
 
-![Image after Blur](assets/augmentation_blur.png)
+# Remove any conflicting traci versions
+!pip uninstall -y traci
 
-## YOLOv8 Results
+# Install SUMO and SUMO tools
+!apt update
+!apt install -y sumo sumo-tools sumo-doc
+```
 
-Achieved a high precision of 92.5% indication that majority of the vehicles were classified correctly.
+### ✅ Verify SUMO Installation
 
-![Yolov8 Confusion Matrix](assets/confusion_matrix.png)
+```bash
+!sumo --version
+```
 
-![Yolov8 F1-Confidence Curve](assets/f1-confidence_curvex.png)
+---
 
-![Yolov8 Result](assets/result.png)
+## 📁 Project Structure
 
-## ✨ Features
+```
+.
+├── yolov8_vehicle_detection/
+│   ├── dataset/
+│   ├── train.py
+│   └── yolov8_custom.pt
+├── sumo_files/
+│   └── 4x4.net.xml, .rou.xml, .sumocfg (SUMO config files)
+├── traffic_env.py   # Custom Gym Environment
+├── dqn_agent.py     # DQN model and training
+└── main.py          # Training loop
+```
 
-- Detects different vehicle types using YOLOv8
-- Counts vehicles from live camera feeds
-- Controls traffic lights based on traffic density using a DeepQ learning model
+---
 
-## 🛠️ Tech Stack
+## ⚙️ SUMO + traci Setup
 
-- **Backend**: Python, OpenCV, YOLOv8
+```python
+import os
+os.environ['SUMO_HOME'] = '/usr/share/sumo'
+
+import sys
+if 'SUMO_HOME' in os.environ:
+    tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
+    sys.path.append(tools)
+import traci
+```
+
+---
+
+## 🎮 RL Environment: `TrafficEnv`
+
+Custom `gym.Env` simulates real-time signal control:
+
+* **Observation Space**: `[traffic_density, wait_time, emergency_vehicle, vehicle_counts...]`
+* **Action Space**:
+  `0 = Keep current light duration`
+  `1 = Increase green light duration`
+  `2 = Decrease green light duration`
+* **Rewards**:
+
+  * For smooth flow and emergency handling
+    − For high wait time and congestion
+
+---
+
+## 🧠 DQN Agent
+
+```python
+model = Sequential([
+    Dense(24, input_dim=state_size, activation='relu'),
+    Dense(24, activation='relu'),
+    Dense(action_size, activation='linear')
+])
+model.compile(loss='mse', optimizer=Adam(learning_rate=0.0005))
+```
+
+* Uses replay memory (`deque`) and ε-greedy exploration.
+* Optimizes traffic control based on simulation feedback.
+
+---
+
+## 🏁 Training the Agent
+
+1. Initialize the SUMO simulation and `TrafficEnv`.
+2. Train the `DQNAgent` by interacting with the environment.
+3. Monitor reward evolution and convergence.
+
+---
+
+## 📊 Results & Improvements
+
+* The system improved traffic flow in simulations by adapting signal durations based on live traffic state.
+* Potential extensions:
+
+  * Multi-agent RL for larger intersections.
+  * Real-time deployment with live video feed + YOLOv8 inference.
+
+---
+
+
+## 📚 References
+
+* [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics)
+* [SUMO Simulator](https://www.eclipse.org/sumo/)
+* [SUMO-RL](https://github.com/LucasAlegre/sumo-rl)
+* [OpenAI Gym](https://github.com/openai/gym)
+
+---
+
+## 👨‍💻 Authors
+
+* - [@darshita27-cmd](https://github.com/darshita27-cmd) – Reinforcement Learning Setup, DQN Integration, Reward Logic, Real-Time Control
+* Collaborators
+* - [@ChaitanyaSekra](https://github.com/ChaitanyaSekra)) Data Augmentation, YOLOv8 Model Training
+
+  
+
+---

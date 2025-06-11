@@ -146,7 +146,7 @@ model.compile(loss='mse', optimizer=Adam(learning_rate=0.0005))
 
 * - [@darshita27-cmd](https://github.com/darshita27-cmd) – Reinforcement Learning Setup, DQN Integration, Reward Logic, Real-Time Control
 * Collaborators
-* - [@ChaitanyaSekra](https://github.com/ChaitanyaSekra)) Data Augmentation, YOLOv8 Model Training
+* - [@ChaitanyaSekra](https://github.com/ChaitanyaSekra) Data Augmentation, YOLOv8 Model Training
 
   
 

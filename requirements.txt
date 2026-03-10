@@ -1,0 +1,25 @@
+# Core ML / DL
+torch>=2.0.0
+torchvision>=0.15.0
+tensorflow>=2.12.0
+numpy>=1.24.0
+scipy>=1.10.0
+scikit-learn>=1.2.0
+
+# Reinforcement Learning
+gym>=0.26.0
+
+# Computer Vision / Data
+Pillow>=9.5.0
+roboflow>=1.1.0
+
+# Plotting
+matplotlib>=3.7.0
+
+# SUMO traffic simulation (TraCI)
+# Install SUMO separately: https://sumo.dlr.de/docs/Installing/index.html
+# traci is bundled with SUMO; alternatively:
+# eclipse-sumo  (or install via apt: sudo apt-get install sumo sumo-tools)
+
+# Standard library (no install needed)
+# collections, glob, os, random, sys
